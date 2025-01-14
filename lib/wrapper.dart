@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_firebase/homepage.dart';
-import 'package:project_firebase/login.dart'; // Pastikan Login diimpor
+import 'package:project_firebase/login.dart';
+import 'package:project_firebase/main.dart';
+import 'package:project_firebase/pages/home_page.dart'; // Pastikan Login diimpor
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -22,7 +24,7 @@ class _WrapperState extends State<Wrapper> {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData) {
             // Jika pengguna sudah login
-            return Homepage();
+            return Wallet();
           } else {
             // Jika pengguna belum login
             return Login();

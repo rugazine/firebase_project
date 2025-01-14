@@ -1,107 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:project_firebase/pages/create_bottom_sheet.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Wallet extends StatefulWidget {
+  const Wallet({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Wallet> createState() => _WalletState();
 }
 
-class _HomeState extends State<Home> {
+class _WalletState extends State<Wallet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      backgroundColor: Colors.blue[100],
+      appBar: AppBar(
         backgroundColor: Colors.blue,
-        onPressed: () {},
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+        centerTitle: true,
+        title: const Text("Wallet"),
       ),
-      body: Container(
-        margin: EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Top",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Up",
-                  style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 30.0,
-            ),
-            Material(
-              elevation: 3.0,
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                padding: EdgeInsets.only(left: 10.0, top: 10.0, bottom: 10.0),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Nama : ",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "Jeremy",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 19.0,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          "Topup : ",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 17.0,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "10.000",
-                          style: TextStyle(
-                              color: Colors.blue,
-                              fontSize: 19.0,
-                              fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => createBottomSheet(context),
+        child: const Icon(Icons.add),
       ),
     );
   }
