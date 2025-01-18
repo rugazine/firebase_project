@@ -41,6 +41,10 @@ dependencies:
   get: ^4.6.6
   sign_in_button: ^3.2.0
   google_sign_in: ^6.2.2
+  cloud_firestore: ^5.6.1
+  intl: ^0.20.1
+  fl_chart: ^0.70.2
+  pie_chart: ^5.4.0
 
 dev_dependencies:
   flutter_test:
@@ -51,7 +55,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  # flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

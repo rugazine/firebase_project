@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_firebase/homepage.dart';
-import 'package:project_firebase/sign/login.dart'; // Pastikan Login diimpor
+import 'package:project_firebase/pages/homepage.dart';
+import 'package:project_firebase/auth/login.dart';
 
 class Wrapper extends StatefulWidget {
   const Wrapper({super.key});
@@ -17,14 +17,18 @@ class _WrapperState extends State<Wrapper> {
       body: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
+          // Handle loading state while checking authentication status
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // Tampilkan loading ketika sedang menunggu data
             return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasData) {
-            // Jika pengguna sudah login
-            return Homepage();
-          } else {
-            // Jika pengguna belum login
+          } 
+
+          // If the user is logged in, navigate to Homepage
+          else if (snapshot.hasData) {
+            return  Homepage();
+          } 
+
+          // If the user is not logged in, navigate to Login page
+          else {
             return Login();
           }
         },
