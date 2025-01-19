@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'login.dart'; // Pastikan untuk mengimpor halaman login
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,9 +14,25 @@ class _SignupState extends State<Signup> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  signUp() async {  
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.text, password: password.text);
+  signUp() async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text, password: password.text);
+      // Jika pendaftaran berhasil, tampilkan notifikasi
+      Get.snackbar("Success", "Account created successfully. Please log in.",
+          snackPosition: SnackPosition.BOTTOM);
+      // Arahkan ke halaman login
+      Get.to(() => Login()); // Ganti dengan halaman login
+    } on FirebaseAuthException catch (e) {
+      // Menangani kesalahan jika akun sudah terdaftar
+      if (e.code == 'email-already-in-use') {
+        Get.snackbar("Error", "This email is already registered.",
+            snackPosition: SnackPosition.BOTTOM);
+      } else {
+        Get.snackbar("Error", e.message ?? "An error occurred.",
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    }
   }
 
   @override
@@ -139,7 +156,7 @@ class _SignupState extends State<Signup> {
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     GestureDetector(
-                      onTap: () => Get.back(),
+                      onTap: () => Get.to(() => Login()), // Arahkan ke halaman login
                       child: Text(
                         "Sign In",
                         style: TextStyle(
