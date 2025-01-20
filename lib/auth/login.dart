@@ -36,7 +36,11 @@ class _LoginState extends State<Login> {
 
   Future<void> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        signInOption: SignInOption.standard, // Menampilkan pilihan akun
+      );
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth =
       await googleUser?.authentication;
 
@@ -47,11 +51,15 @@ class _LoginState extends State<Login> {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
 
+
       // Kirim notifikasi setelah login dengan Google berhasil
       firebaseApi.showNotification(
         title: 'Google Login Successful',
         body: 'You have successfully logged in with Google!',
       );
+
+      print("User signed in with Google: ${googleUser?.email}"); // Debugging
+
     } catch (e) {
       print('Error signing in with Google: $e');
     }

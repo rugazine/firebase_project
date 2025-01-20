@@ -6,9 +6,11 @@ import 'controller/expense_controller.dart';
 import 'model/expense_model.dart';
 import 'package:project_firebase/pages/add_expense/screens/add_expense.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:project_firebase/auth/auth_service.dart'; // Impor AuthService
 
 class ExpensePage extends StatelessWidget {
   final ExpenseController expenseController = Get.put(ExpenseController());
+  final AuthService authService = AuthService(); // Instance AuthService
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class ExpensePage extends StatelessWidget {
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              expenseController.logout();
+                              authService.logout(); 
                             },
                           ),
                         ],
