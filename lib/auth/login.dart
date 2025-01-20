@@ -4,6 +4,7 @@ import 'package:project_firebase/auth/forgot.dart';
 import 'package:project_firebase/auth/signup.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../puhsnotif/notif_api.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -16,9 +17,21 @@ class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  final FirebaseApi firebaseApi = FirebaseApi(); // Instance FirebaseApi
+
   signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email.text, password: password.text);
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      // Kirim notifikasi setelah login berhasil
+      firebaseApi.showNotification(
+        title: 'Login Successful',
+        body: 'You have successfully logged in!',
+      );
+    } catch (e) {
+      print('Error signing in with email: $e');
+    }
   }
 
   Future<void> signInWithGoogle() async {
@@ -29,7 +42,7 @@ class _LoginState extends State<Login> {
 
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      await googleUser?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -37,7 +50,16 @@ class _LoginState extends State<Login> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+
+      // Kirim notifikasi setelah login dengan Google berhasil
+      firebaseApi.showNotification(
+        title: 'Google Login Successful',
+        body: 'You have successfully logged in with Google!',
+      );
+
       print("User signed in with Google: ${googleUser?.email}"); // Debugging
+
     } catch (e) {
       print('Error signing in with Google: $e');
     }
