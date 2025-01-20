@@ -4,6 +4,7 @@ import 'package:project_firebase/auth/forgot.dart';
 import 'package:project_firebase/auth/signup.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../puhsnotif/notif_api.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -16,16 +17,28 @@ class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
+  final FirebaseApi firebaseApi = FirebaseApi(); // Instance FirebaseApi
+
   signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email.text, password: password.text);
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      // Kirim notifikasi setelah login berhasil
+      firebaseApi.showNotification(
+        title: 'Login Successful',
+        body: 'You have successfully logged in!',
+      );
+    } catch (e) {
+      print('Error signing in with email: $e');
+    }
   }
 
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      await googleUser?.authentication;
 
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
@@ -33,6 +46,12 @@ class _LoginState extends State<Login> {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Kirim notifikasi setelah login dengan Google berhasil
+      firebaseApi.showNotification(
+        title: 'Google Login Successful',
+        body: 'You have successfully logged in with Google!',
+      );
     } catch (e) {
       print('Error signing in with Google: $e');
     }
@@ -44,11 +63,11 @@ class _LoginState extends State<Login> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-        child: Padding(
+          child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+              children: [
                 SizedBox(height: 50),
                 Center(
                   child: Container(
@@ -60,8 +79,8 @@ class _LoginState extends State<Login> {
                     child: Icon(
                       Icons.lock_rounded,
                       size: 72,
-                color: Colors.blue[700],
-              ),
+                      color: Colors.blue[700],
+                    ),
                   ),
                 ),
                 SizedBox(height: 50),
@@ -95,16 +114,16 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                   child: TextField(
-                controller: email,
-                decoration: InputDecoration(
+                    controller: email,
+                    decoration: InputDecoration(
                       hintText: 'Email address',
                       prefixIcon: Icon(Icons.email_outlined, color: Colors.grey[600]),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 20),
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
@@ -118,61 +137,61 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                   child: TextField(
-                controller: password,
-                obscureText: true,
-                decoration: InputDecoration(
+                    controller: password,
+                    obscureText: true,
+                    decoration: InputDecoration(
                       hintText: 'Password',
                       prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[600]),
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 30),
+                SizedBox(height: 30),
                 Container(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
                     onPressed: () => signIn(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue[700],
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[700],
                       elevation: 0,
-                  shape: RoundedRectangleBorder(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-                child: Text(
+                      ),
+                    ),
+                    child: Text(
                       "Sign In",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 20),
                 Container(
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton.icon(
                     onPressed: () => signInWithGoogle(),
                     icon: Icon(Icons.g_mobiledata, size: 30, color: Colors.blue[700]),
-                label: Text(
+                    label: Text(
                       "Sign in with Google",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.blue[700],
                       ),
-                ),
-                style: ElevatedButton.styleFrom(
+                    ),
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[50],
                       elevation: 0,
-                  shape: RoundedRectangleBorder(
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
+                    ),
                   ),
                 ),
-              ),
                 SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -183,7 +202,7 @@ class _LoginState extends State<Login> {
                     ),
                     GestureDetector(
                       onTap: () => Get.to(Signup()),
-                child: Text(
+                      child: Text(
                         "Sign Up",
                         style: TextStyle(
                           color: Colors.blue[700],
@@ -197,16 +216,16 @@ class _LoginState extends State<Login> {
                 Center(
                   child: TextButton(
                     onPressed: () => Get.to(Forgot()),
-                child: Text(
+                    child: Text(
                       "Forgot Password?",
                       style: TextStyle(
                         color: Colors.grey[600],
                         fontSize: 14,
                       ),
                     ),
+                  ),
                 ),
-              ),
-            ],
+              ],
             ),
           ),
         ),

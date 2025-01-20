@@ -42,9 +42,11 @@ dependencies:
   sign_in_button: ^3.2.0
   google_sign_in: ^6.2.2
   cloud_firestore: ^5.6.1
-  intl: ^0.20.1
+  intl: ^0.19.0
   fl_chart: ^0.70.2
   pie_chart: ^5.4.0
+  firebase_messaging: ^15.2.0  # firebase_messaging versi 15.2.0
+  awesome_notifications: ^0.10.0
 
 dev_dependencies:
   flutter_test:
