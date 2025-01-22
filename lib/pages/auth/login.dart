@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:project_firebase/auth/forgot.dart';
-import 'package:project_firebase/auth/signup.dart';
+import 'package:project_firebase/pages/auth/forgot.dart';
+import 'package:project_firebase/pages/auth/signup.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../puhsnotif/notif_api.dart';
+import '../../puhsnotif/notif_api.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

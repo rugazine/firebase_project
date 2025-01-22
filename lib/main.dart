@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:project_firebase/auth/wrapper.dart';
+import 'package:project_firebase/pages/auth/wrapper.dart';
 import 'package:get/get.dart';
 import 'package:project_firebase/puhsnotif/notif_api.dart';
-import 'auth/firebase_options.dart';
+import 'pages/auth/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
