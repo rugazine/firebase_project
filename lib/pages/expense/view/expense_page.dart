@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:project_firebase/pages/profile/profile_page.dart';
-import 'controller/expense_controller.dart';
-import 'model/expense_model.dart';
-import 'package:project_firebase/pages/add_expense/screens/add_expense.dart';
+import '../controller/expense_controller.dart';
+import '../model/expense_model.dart';
+import 'package:project_firebase/pages/add_expense/view/add_expense.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'package:project_firebase/pages/auth/auth_service.dart'; // Impor AuthService
+import '../../../widgets/category_pie_chart.dart';
+import '../../../widgets/monthly_statistics.dart';
 
 class ExpensePage extends StatelessWidget {
   final ExpenseController expenseController = Get.put(ExpenseController());
+  final AuthService authService = AuthService(); // Instance AuthService
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,7 @@ class ExpensePage extends StatelessWidget {
                             ),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              expenseController.logout();
+                              authService.logout();
                             },
                           ),
                         ],
@@ -63,7 +67,8 @@ class ExpensePage extends StatelessWidget {
                 value: 'profile',
                 child: Row(
                   children: [
-                    Icon(Icons.person_outline, color: Colors.blue[700], size: 20),
+                    Icon(Icons.person_outline,
+                        color: Colors.blue[700], size: 20),
                     SizedBox(width: 8),
                     Text('Profile'),
                   ],
@@ -161,8 +166,10 @@ class ExpensePage extends StatelessWidget {
                             'Average/Day',
                             Icons.show_chart,
                             () {
-                              if (expenseController.expenses.isEmpty) return 0.0;
-                              final total = expenseController.totalExpense.value;
+                              if (expenseController.expenses.isEmpty)
+                                return 0.0;
+                              final total =
+                                  expenseController.totalExpense.value;
                               final days = expenseController.expenses.length;
                               return total / days;
                             },
@@ -190,12 +197,12 @@ class ExpensePage extends StatelessWidget {
                     ),
                   ),
                   Obx(() => Text(
-                    '${expenseController.expenses.length} items',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14,
-                    ),
-                  )),
+                        '${expenseController.expenses.length} items',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 14,
+                        ),
+                      )),
                 ],
               ),
             ),
@@ -209,9 +216,11 @@ class ExpensePage extends StatelessWidget {
                 return Center(
                   child: Column(
                     children: [
-                      Icon(Icons.receipt_long_outlined, size: 70, color: Colors.grey[400]),
+                      Icon(Icons.receipt_long_outlined,
+                          size: 70, color: Colors.grey[400]),
                       SizedBox(height: 16),
-                      Text('No expenses yet', style: TextStyle(color: Colors.grey[600])),
+                      Text('No expenses yet',
+                          style: TextStyle(color: Colors.grey[600])),
                     ],
                   ),
                 );
@@ -361,145 +370,10 @@ class ExpensePage extends StatelessWidget {
             }),
 
             // Category Pie Chart
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Expense by Category',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Obx(() {
-                    final categoryStats = expenseController.getCategoryExpenses();
-                    if (categoryStats.isEmpty) return SizedBox();
-
-                    return Container(
-                      height: 200,
-                      child: PieChart(
-                        dataMap: categoryStats,
-                        animationDuration: Duration(milliseconds: 800),
-                        chartLegendSpacing: 32,
-                        chartRadius: MediaQuery.of(context).size.width / 3.2,
-                        colorList: categoryStats.keys.map((key) => 
-                          expenseController.getCategoryColor(key)
-                        ).toList(),
-                        initialAngleInDegree: 0,
-                        chartType: ChartType.disc,
-                        legendOptions: LegendOptions(
-                          showLegendsInRow: false,
-                          legendPosition: LegendPosition.right,
-                          showLegends: true,
-                          legendTextStyle: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[700],
-                          ),
-                        ),
-                        chartValuesOptions: ChartValuesOptions(
-                          showChartValueBackground: false,
-                          showChartValues: true,
-                          showChartValuesInPercentage: true,
-                          showChartValuesOutside: false,
-                          decimalPlaces: 1,
-                        ),
-                      ),
-                    );
-                  }),
-                ],
-              ),
-            ),
+            CategoryPieChart(),
 
             // Monthly Statistics
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Monthly Statistics',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[800],
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Obx(() {
-                    final monthlyStats = expenseController.getMonthlyExpenses();
-                    if (monthlyStats.isEmpty) return SizedBox();
-
-                    return Column(
-                      children: monthlyStats.entries.map((entry) {
-                        final percentage = (entry.value / expenseController.totalExpense.value * 100).clamp(0, 100);
-                        
-                        return Container(
-                          margin: EdgeInsets.only(bottom: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    entry.key,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                  Text(
-                                    '\$${entry.value.toStringAsFixed(2)}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.blue[700],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 8),
-                              Stack(
-                                children: [
-                                  Container(
-                                    height: 8,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                  FractionallySizedBox(
-                                    widthFactor: percentage / 100,
-                                    child: Container(
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        color: Colors.blue[700],
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '${percentage.toStringAsFixed(1)}% of total',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }),
-                ],
-              ),
-            ),
+            MonthlyStatistics(),
           ],
         ),
       ),

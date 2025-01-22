@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:project_firebase/auth/wrapper.dart';
-import 'package:get/get.dart'; // Tambahkan GetX di sini
-import 'auth/firebase_options.dart';
+import 'package:project_firebase/pages/auth/wrapper.dart';
+import 'package:get/get.dart';
+import 'package:project_firebase/puhsnotif/notif_api.dart';
+import 'pages/auth/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Inisialisasi Firebase API atau notifikasi
+  final firebaseApi = FirebaseApi();
+  await firebaseApi.initNotifications();
+
   runApp(const MyApp());
 }
 
@@ -18,7 +24,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      // Ganti dengan GetMaterialApp agar navigasi GetX berfungsi
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(

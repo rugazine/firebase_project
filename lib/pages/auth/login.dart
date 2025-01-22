@@ -1,21 +1,68 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:project_firebase/pages/auth/forgot.dart';
+import 'package:project_firebase/pages/auth/signup.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import '../../puhsnotif/notif_api.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<Signup> createState() => _SignupState();
+  State<Login> createState() => _LoginState();
 }
 
-class _SignupState extends State<Signup> {
+class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
 
-  signUp() async {  
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email.text, password: password.text);
+  final FirebaseApi firebaseApi = FirebaseApi(); // Instance FirebaseApi
+
+  signIn() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      // Kirim notifikasi setelah login berhasil
+      firebaseApi.showNotification(
+        title: 'Login Successful',
+        body: 'You have successfully logged in!',
+      );
+    } catch (e) {
+      print('Error signing in with email: $e');
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        signInOption: SignInOption.standard, // Menampilkan pilihan akun
+      );
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      final GoogleSignInAuthentication? googleAuth =
+      await googleUser?.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+
+      // Kirim notifikasi setelah login dengan Google berhasil
+      firebaseApi.showNotification(
+        title: 'Google Login Successful',
+        body: 'You have successfully logged in with Google!',
+      );
+
+      print("User signed in with Google: ${googleUser?.email}"); // Debugging
+
+    } catch (e) {
+      print('Error signing in with Google: $e');
+    }
   }
 
   @override
@@ -38,7 +85,7 @@ class _SignupState extends State<Signup> {
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      Icons.person_add_rounded,
+                      Icons.lock_rounded,
                       size: 72,
                       color: Colors.blue[700],
                     ),
@@ -46,7 +93,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: 50),
                 Text(
-                  'Create Account',
+                  'Welcome Back!',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -55,7 +102,7 @@ class _SignupState extends State<Signup> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Please fill in the form to continue',
+                  'Please sign in to continue',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey[600],
@@ -113,7 +160,7 @@ class _SignupState extends State<Signup> {
                   width: double.infinity,
                   height: 55,
                   child: ElevatedButton(
-                    onPressed: () => signUp(),
+                    onPressed: () => signIn(),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[700],
                       elevation: 0,
@@ -122,10 +169,33 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                     child: Text(
-                      "Sign Up",
+                      "Sign In",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: () => signInWithGoogle(),
+                    icon: Icon(Icons.g_mobiledata, size: 30, color: Colors.blue[700]),
+                    label: Text(
+                      "Sign in with Google",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[50],
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
@@ -135,13 +205,13 @@ class _SignupState extends State<Signup> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Already have an account? ",
+                      "Don't have an account? ",
                       style: TextStyle(color: Colors.grey[600]),
                     ),
                     GestureDetector(
-                      onTap: () => Get.back(),
+                      onTap: () => Get.to(Signup()),
                       child: Text(
-                        "Sign In",
+                        "Sign Up",
                         style: TextStyle(
                           color: Colors.blue[700],
                           fontWeight: FontWeight.bold,
@@ -149,6 +219,19 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                   ],
+                ),
+                SizedBox(height: 15),
+                Center(
+                  child: TextButton(
+                    onPressed: () => Get.to(Forgot()),
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

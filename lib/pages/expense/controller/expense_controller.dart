@@ -115,12 +115,13 @@ class ExpenseController extends GetxController {
 
   Map<String, double> getMonthlyExpenses() {
     Map<String, double> monthlyTotals = {};
-    
+
     for (var expense in expenses) {
       String monthYear = DateFormat('MMMM yyyy').format(expense.date);
-      monthlyTotals[monthYear] = (monthlyTotals[monthYear] ?? 0) + expense.amount;
+      monthlyTotals[monthYear] =
+          (monthlyTotals[monthYear] ?? 0) + expense.amount;
     }
-    
+
     // Sort by date descending (newest first)
     var sortedEntries = monthlyTotals.entries.toList()
       ..sort((a, b) {
@@ -128,21 +129,22 @@ class ExpenseController extends GetxController {
         var bDate = DateFormat('MMMM yyyy').parse(b.key);
         return bDate.compareTo(aDate);
       });
-    
+
     return Map.fromEntries(sortedEntries);
   }
 
   Map<String, double> getCategoryExpenses() {
     Map<String, double> categoryTotals = {};
-    
+
     for (var expense in expenses) {
-      categoryTotals[expense.category] = (categoryTotals[expense.category] ?? 0) + expense.amount;
+      categoryTotals[expense.category] =
+          (categoryTotals[expense.category] ?? 0) + expense.amount;
     }
-    
+
     // Sort by amount descending
     var sortedEntries = categoryTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
-    
+
     return Map.fromEntries(sortedEntries);
   }
 
