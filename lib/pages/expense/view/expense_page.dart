@@ -11,7 +11,7 @@ import '../../../widgets/category_pie_chart.dart';
 import '../../../widgets/monthly_statistics.dart';
 
 class ExpensePage extends StatelessWidget {
-  final ExpenseController expenseController = Get.put(ExpenseController());
+  final ExpenseController expenseController = Get.find();
   final AuthService authService = AuthService(); // Instance AuthService
 
   @override
